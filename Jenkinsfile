@@ -10,21 +10,21 @@ def createBuildStages(builds) {
 }
 
 def createBuildStage(name, definition) {
-  return {
-    agent {
-      docker { image definition.image }
-    }
-    environment {
-      JENKINS_PLATFORM = name
-      TOOLCHAIN = definition.toolchain
-    }
-    steps {
+  return [
+    agent: [
+      docker: [ image: definition.image ]
+    ],
+    environment: [
+      JENKINS_PLATFORM: name,
+      TOOLCHAIN: definition.toolchain
+    ],
+    steps: [
       sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
       sh 'uname -a'
       sh 'sleep 20'
       sh 'echo build complete'
-    }
-  }
+    ]
+  ]
 }
 
 def getToolchain(builds, name) {
