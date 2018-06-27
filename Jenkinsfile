@@ -39,7 +39,11 @@ pipeline {
   agent none
   stages {
     stage('Build') {
-      parallel buildStages
+      steps {
+        script {
+          parallel buildStages
+        }
+      }
     }
   }
 }
