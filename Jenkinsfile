@@ -23,7 +23,7 @@ def createBuildStages(builds) {
   }
 }
 
-def getToolchain(name) {
+def getToolchain(builds, name) {
   return builds[name].toolchain
 }
 
@@ -38,7 +38,7 @@ pipeline {
           }
           environment {
             JENKINS_PLATFORM = 'belkin'
-            TOOLCHAIN = getToolchain('belkin')
+            TOOLCHAIN = getToolchain(builds, 'belkin')
           }
           steps {
             sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
@@ -53,7 +53,7 @@ pipeline {
           }
           environment {
             JENKINS_PLATFORM = 'symantec'
-            TOOLCHAIN = getToolchain('symantec')
+            TOOLCHAIN = getToolchain(builds, 'symantec')
           }
           steps {
             sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
