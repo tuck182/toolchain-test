@@ -11,15 +11,17 @@ def createBuildStages(builds) {
 
 def createBuildStage(name, definition) {
   return {
-    docker.image(definition.image).inside {
-      withEnv([
-        "JENKINS_PLATFORM=${name}",
-        "TOOLCHAIN=${definition.toolchain}",
-      ]) {
-        sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
-        sh 'uname -a'
-        sh 'sleep 20'
-        sh 'echo build complete'
+    stage(name) {
+      docker.image(definition.image).inside {
+        withEnv([
+          "JENKINS_PLATFORM=${name}",
+          "TOOLCHAIN=${definition.toolchain}",
+        ]) {
+          sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
+          sh 'uname -a'
+          sh 'sleep 20'
+          sh 'echo build complete'
+        }
       }
     }
   }
