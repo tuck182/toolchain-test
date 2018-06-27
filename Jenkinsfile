@@ -17,7 +17,7 @@ def createBuildStage(name, definition) {
           "JENKINS_PLATFORM=${name}",
           "TOOLCHAIN=${definition.toolchain}",
         ]) {
-          sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN; uname -a'
+          sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN; uname -a; dpkg --print-architecture; getconf LONG_BIT; arch'
           sh 'sleep 20'
           sh 'echo build complete'
         }
