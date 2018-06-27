@@ -27,11 +27,8 @@ pipeline {
     agent none
     stages {
         stage('Build') {
-            // parallel {
-            //     createBuildStages(builds)
-            // }
-            steps {
-                echo "Build"
+            parallel {
+                createBuildStages(builds)
             }
         }
     }
