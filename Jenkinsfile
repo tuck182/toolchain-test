@@ -27,14 +27,6 @@ def createBuildStage(name, definition) {
   }
 }
 
-def getToolchain(builds, name) {
-  builds[name].toolchain
-}
-
-def buildStages = builds.collectEntries { name, definition ->
-  [ "${name}": createBuildStage(name, definition) ]
-}
-
 pipeline {
   agent none
   stages {
