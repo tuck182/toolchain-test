@@ -4,7 +4,7 @@ def builds = [
 ]
 
 def createBuildStages(builds) {
-  builds.each { name, definition ->
+  return builds.map { name, definition ->
     stage(name) {
       agent {
         docker { image definition.image }
@@ -32,36 +32,7 @@ pipeline {
   stages {
     stage('Build') {
       parallel {
-        stage('belkin') {
-          agent {
-            docker { image builds.belkin.image }
-          }
-          environment {
-            JENKINS_PLATFORM = 'belkin'
-            TOOLCHAIN = getToolchain(builds, 'belkin')
-          }
-          steps {
-            sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
-            sh 'uname -a'
-            sh 'sleep 20'
-            sh 'echo build complete'
-          }
-        }
-        stage('symantec') {
-          agent {
-            docker { image builds.symantec.image }
-          }
-          environment {
-            JENKINS_PLATFORM = 'symantec'
-            TOOLCHAIN = getToolchain(builds, 'symantec')
-          }
-          steps {
-            sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
-            sh 'uname -a'
-            sh 'sleep 20'
-            sh 'echo build complete'
-          }
-        }
+        createBuildStages(builds)
       }
     }
   }
