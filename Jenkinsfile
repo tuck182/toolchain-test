@@ -34,8 +34,6 @@ def getToolchain(builds, name) {
 pipeline {
   agent none
   stages {
-    stage('Build') {
-      parallel createBuildStages(builds)
-    }
+    parallel createBuildStages(builds)
   }
 }
