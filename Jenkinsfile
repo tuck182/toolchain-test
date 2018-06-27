@@ -31,9 +31,15 @@ def getToolchain(builds, name) {
   builds[name].toolchain
 }
 
+def buildStages = builds.collectEntries { name, definition ->
+  [ "${name}": createBuildStage(name, definition) ]
+}
+
 pipeline {
   agent none
   stages {
-    parallel createBuildStages(builds)
+    stage('Build') {
+      parallel buildStages
+    }
   }
 }
