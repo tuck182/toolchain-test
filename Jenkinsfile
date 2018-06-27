@@ -23,6 +23,10 @@ def createBuildStages(builds) {
   }
 }
 
+def getToolchain(name) {
+  return builds[name].toolchain
+}
+
 pipeline {
   agent none
   stages {
@@ -33,8 +37,8 @@ pipeline {
             docker { image builds.belkin.image }
           }
           environment {
-            JENKINS_PLATFORM = name
-            TOOLCHAIN = builds.belkin.toolchain
+            JENKINS_PLATFORM = 'belkin'
+            TOOLCHAIN = getToolchain('belkin')
           }
           steps {
             sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
@@ -48,8 +52,8 @@ pipeline {
             docker { image builds.symantec.image }
           }
           environment {
-            JENKINS_PLATFORM = name
-            TOOLCHAIN = builds.symantec.toolchain
+            JENKINS_PLATFORM = 'symantec'
+            TOOLCHAIN = getToolchain('symantec')
           }
           steps {
             sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN'
