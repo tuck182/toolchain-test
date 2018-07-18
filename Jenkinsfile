@@ -44,9 +44,10 @@ def createBuildStage(name, definition) {
 }
 
 pipeline {
-  agent none
+  agent any
   stages {
     stage('PrepareDocker') {
+      agent master
       steps {
         script {
           buildDockerImage('docker-jenkins')
