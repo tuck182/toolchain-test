@@ -47,7 +47,11 @@ pipeline {
   agent none
   stages {
     stage('PrepareDocker') {
-      buildDockerImage('docker-jenkins')
+      steps {
+        script {
+          buildDockerImage('docker-jenkins')
+        }
+      }
     }
 
     stage('Build') {
