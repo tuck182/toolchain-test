@@ -3,6 +3,28 @@ def builds = [
   symantec: [ image:'debian:8', toolchain: 'arm_cortex-a7_gcc-5.2.0_uClibc-1.0.14_eabi' ],
 ]
 
+def buildDockerImage(name) {
+  // Exit early if the docker image is up to date, based on commit hashes of this file and
+  // the docker image directory
+  def dockerPath = ".docker/${name}"
+  def imageName = "${name}"
+  def imageHash = [
+    "Jenkinsfile",
+    dockerPath
+  ].collect {
+    sh(script: "git rev-list -1 --abbrev-commit HEAD ${it}", returnStdout: true).trim()
+  }.join('_')
+
+  def imageDetails = sh(
+    script: "docker image inspect '${imageName}:${imageHash}' || true",
+    returnStdout: true).trim()
+  if (imageDetails == "[]") {
+    docker.build("${imageName}:${imageHash}", dockerPath).push()
+  } else {
+    println "${imageName}:${imageHash} already built; skipping (imageDetails:${imageDetails})"
+  }
+}
+
 def createBuildStages(builds) {
   builds.collectEntries { name, definition ->
     [ "${name}": createBuildStage(name, definition) ]
@@ -12,15 +34,10 @@ def createBuildStages(builds) {
 def createBuildStage(name, definition) {
   return {
     stage(name) {
-      docker.image(definition.image).inside {
-        withEnv([
-          "JENKINS_PLATFORM=${name}",
-          "TOOLCHAIN=${definition.toolchain}",
-        ]) {
-          sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN; uname -a; dpkg --print-architecture; getconf LONG_BIT; arch'
-          sh 'sleep 20'
-          sh 'echo build complete'
-        }
+      node ('docker-jenkins') {
+        sh 'echo building $JENKINS_PLATFORM using $TOOLCHAIN; uname -a; dpkg --print-architecture; getconf LONG_BIT; arch'
+        sh 'sleep 20'
+        sh 'echo build complete'
       }
     }
   }
@@ -29,6 +46,10 @@ def createBuildStage(name, definition) {
 pipeline {
   agent none
   stages {
+    stage('PrepareDocker') {
+      buildDockerImage('docker-jenkins')
+    }
+
     stage('Build') {
       steps {
         script {
