@@ -47,8 +47,9 @@ pipeline {
   agent any
   stages {
     stage('PrepareDocker') {
-      agent master
+      agent any
       steps {
+        checkout scm
         script {
           buildDockerImage('docker-jenkins')
         }
