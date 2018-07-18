@@ -16,10 +16,10 @@ def buildDockerImage(name) {
   }.join('_')
 
   def imageDetails = sh(
-    script: "docker image inspect '${imageName}:${imageHash}' || true",
+    script: "docker image inspect 'tuck182/${imageName}:${imageHash}' || true",
     returnStdout: true).trim()
   if (imageDetails == "[]") {
-    docker.build("${imageName}:${imageHash}", dockerPath).push()
+    docker.build("tuck182/${imageName}:${imageHash}", dockerPath)
   } else {
     println "${imageName}:${imageHash} already built; skipping (imageDetails:${imageDetails})"
   }
